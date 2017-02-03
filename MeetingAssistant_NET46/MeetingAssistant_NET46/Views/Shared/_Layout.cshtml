@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+        .form-style-8 {
+            font-family: 'Open Sans Condensed', arial, sans;
+            width: 500px;
+            padding: 30px;
+            background: #FFFFFF;
+            margin: 50px auto;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+            -moz-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+            -webkit-box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.22);
+        }
+
+            .form-style-8 h2 {
+                background: #4D4D4D;
+                text-transform: uppercase;
+                font-family: 'Open Sans Condensed', sans-serif;
+                color: #797979;
+                font-size: 18px;
+                font-weight: 100;
+                padding: 20px;
+                margin: -30px -30px 30px -30px;
+            }
+
+            .form-style-8 input[type="text"],
+            .form-style-8 input[type="date"],
+            .form-style-8 input[type="datetime"],
+            .form-style-8 input[type="email"],
+            .form-style-8 input[type="number"],
+            .form-style-8 input[type="search"],
+            .form-style-8 input[type="time"],
+            .form-style-8 input[type="url"],
+            .form-style-8 input[type="password"],
+            .form-style-8 textarea,
+            .form-style-8 select {
+                box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                outline: none;
+                display: block;
+                width: 100%;
+                padding: 7px;
+                border: none;
+                border-bottom: 1px solid #ddd;
+                background: transparent;
+                margin-bottom: 10px;
+                font: 16px Arial, Helvetica, sans-serif;
+                height: 45px;
+            }
+
+            .form-style-8 textarea {
+                resize: none;
+                overflow: hidden;
+            }
+
+            .form-style-8 input[type="button"],
+            .form-style-8 input[type="submit"] {
+                -moz-box-shadow: inset 0px 1px 0px 0px #45D6D6;
+                -webkit-box-shadow: inset 0px 1px 0px 0px #45D6D6;
+                box-shadow: inset 0px 1px 0px 0px #45D6D6;
+                background-color: #2CBBBB;
+                border: 1px solid #27A0A0;
+                display: inline-block;
+                cursor: pointer;
+                color: #FFFFFF;
+                font-family: 'Open Sans Condensed', sans-serif;
+                font-size: 14px;
+                padding: 8px 18px;
+                text-decoration: none;
+                text-transform: uppercase;
+            }
+
+                .form-style-8 input[type="button"]:hover,
+                .form-style-8 input[type="submit"]:hover {
+                    background: linear-gradient(to bottom, #34CACA 5%, #30C9C9 100%);
+                    background-color: #34CACA;
+                }
+    </style>
+
+
+    <script>
+        // <scr ipt src="scripts/audiodisplay.js"></s cript>
+        function drawBuffer(width, height, context, data) {
+            var step = Math.ceil(data.length / width);
+            var amp = height / 2;
+            context.fillStyle = "silver";
+            context.clearRect(0, 0, width, height);
+            for (var i = 0; i < width; i++) {
+                var min = 1.0;
+                var max = -1.0;
+                for (j = 0; j < step; j++) {
+                    var datum = data[(i * step) + j];
+                    if (datum < min)
+                        min = datum;
+                    if (datum > max)
+                        max = datum;
+                }
+                context.fillRect(i, (1 + min) * amp, 1, Math.max(1, (max - min) * amp));
+            }
+        }
+
+
+        function uploadBlob(blobData) {
+
+            var url = "/api/values/Upload?dummy=test";
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/octet-stream',
+
+                data: blobData,
+                processData: false,
+                crossDomain: false
+            });
+
+            return;
+
+
+            var oReq = new XMLHttpRequest();
+            oReq.open("POST", url, true);
+            oReq.onload = function(oEvent) {
+                // Uploaded.
+                alert('yay!');
+            };
+
+            var blob = new Blob(blobData, { type: 'text/plain' }); // ['abc123']
+
+            oReq.send(blob);
+        }
+
+    </script>
+
+    <script src="scripts/recorder.js"></script>
+    <script src="scripts/main.js"></script>
+    <style type="text/css">
+        html {
+            overflow: hidden;
+        }
+
+        body {
+            font: 14pt Arial, sans-serif;
+            background: lightgrey;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            margin: 0 0;
+        }
+
+        canvas {
+            display: inline-block;
+            background: #202020;
+            width: 95%;
+            height: 45%;
+            box-shadow: 0px 0px 10px blue;
+        }
+
+        #controls {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-around;
+            height: 20%;
+            width: 100%;
+        }
+
+        #record {
+            height: 15vh;
+        }
+
+        #record.recording {
+            background: red;
+            background: -webkit-radial-gradient(center, ellipse cover, #ff0000 0%, lightgrey 75%, lightgrey 100%, #7db9e8 100%);
+            background: -moz-radial-gradient(center, ellipse cover, #ff0000 0%, lightgrey 75%, lightgrey 100%, #7db9e8 100%);
+            background: radial-gradient(center, ellipse cover, #ff0000 0%, lightgrey 75%, lightgrey 100%, #7db9e8 100%);
+        }
+
+        #save, #save img {
+            height: 10vh;
+        }
+
+        #save {
+            opacity: 0.25;
+        }
+
+        #save[download] {
+            opacity: 1;
+        }
+
+        #viz {
+            height: 80%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        @@media (orientation: landscape) {
+            body {
+                flex-direction: row;
+            }
+
+            #controls {
+                flex-direction: column;
+                height: 100%;
+                width: 10%;
+            }
+
+            #viz {
+                height: 100%;
+                width: 90%;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+
+</body>
+</html>

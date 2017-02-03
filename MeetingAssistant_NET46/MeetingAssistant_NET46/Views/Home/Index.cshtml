@@ -1,0 +1,90 @@
+﻿
+<div class="row">
+
+
+    <script>
+        var employeeSelectHtml;
+
+        var getEmployees = function(callback) {
+            $.get("/api/employees", function (result) {
+                callback(result);
+            });
+        };
+
+        var getLocations = function (callback) {
+            $.get("/api/locations", function (result) {
+                callback(result);
+            });
+        };
+
+        // wait for the DOM to be loaded
+        $(function() {
+            // bind 'myForm' and provide a simple callback function
+
+            $('#createMeetingForm').ajaxForm(function(data) {
+                alert("The meeting will start with id=" + data);
+            });
+
+            getLocations(function (result) {
+                /*$(result).each(function(index, item) {
+                });*/
+
+                $("#location_").autocomplete({
+                    source: result
+                });
+            });
+
+            getEmployees(function(result)
+            {
+                employeeSelectHtml = "<select name='participantList'>";
+                $(result).each(function(index, item)
+                {
+                    employeeSelectHtml += "<option value='" + item.Id + "'>" + item.Name + "</option>";
+                });
+                employeeSelectHtml += "</select><br />";
+
+                $("#organizerPlaceholder").replaceWith(employeeSelectHtml);
+
+                $("#addParticipantBtn").click(function () {
+                    $("#participants").append(employeeSelectHtml);
+                    return false;
+                });
+            });
+        });
+    </script>
+
+    <form id="createMeetingForm" action="/api/values" method="post" class="form-style-8">
+        Name: <input type="text" name="name"/><br/>
+        Location:
+
+
+        <!--
+        <select name="location">
+            <option value="Reykjavík">Reykjavík</option>
+            <option value="Florida">Florida</option>
+            <option value="Monterrey">Monterrey</option>
+            <option value="Stockholm">Stockholm</option>
+            <option value="Moscow">Moscow</option>
+            <option value="Redmond">Redmond</option>
+            <option value="Oslo">Oslo</option>
+            <option value="White house">White house</option>
+        </select>
+        -->
+        <input id="location" name="location" type="text"/>
+        <br/>
+        Organizer:
+        <div id="organizerPlaceholder"></div><br/>
+        <br/>
+        Participants [<a id="addParticipantBtn" href="#">Add participant</a>]<br/>
+        <div id="participants"></div><br/>
+
+        <input type="submit" value="Create meeting"/>
+    </form>
+
+    <div id="viz">
+        <canvas id="analyser" width="1024" height="500"></canvas>
+        <canvas id="wavedisplay" width="1024" height="500"></canvas>
+    </div>
+
+
+</div>

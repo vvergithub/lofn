@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="MeetingAssistant_NET46.AzureDb-Web.config Connection String" description="MeetingAssistant_NET46.AzureDb Connection String used in web.config by the application to access the database." defaultValue="MeetingAssistant_NET46.AzureDb_ConnectionString" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\APPL\\dev\\MeetingAssistant_NET46\\MeetingAssistant_NET46\\MeetingAssistant_NET46\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='MeetingAssistant_NET46.AzureDb']/@connectionString" />
+  </parameter>
+</parameters>
