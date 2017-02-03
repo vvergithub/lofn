@@ -36,16 +36,22 @@ namespace MeetingAssistant_NET46
     [Table("Content")]
     public class Content
     {
-        [Key, Column(Order = 0)]
+        public Guid Id { get; set; }
+
+        // [Key, Column(Order = 0)]
         public Guid MeetingId { get; set; }
-        [Key, Column(Order = 1)]
-        public int Sequence { get; protected set; }
+        // [Key, Column(Order = 1)]
+        public int Sequence { get; set; }
 
         public Guid EmployeeId { get; set; }
-        public Guid ParticipantId { get; set; }
 
         public string Line { get; set; }
         public Guid CategoryId { get; set; }
+
+        public Content()
+        {
+            Id = Guid.NewGuid();
+        }
     }
 
     [Table("Employees")]

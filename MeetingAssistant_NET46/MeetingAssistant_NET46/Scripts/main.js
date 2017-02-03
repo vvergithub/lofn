@@ -44,7 +44,8 @@ function gotBuffers(buffers) {
 
     // the ONLY time gotBuffers is called is right after a new recording is completed - 
     // so here's where we should set up the download.
-    audioRecorder.exportWAV(doneEncoding);
+    // audioRecorder.exportWAV(doneEncoding);
+    saveAudio();
 }
 
 function doneEncoding(blob) {
@@ -66,6 +67,35 @@ function toggleRecording(e) {
         e.classList.add("recording");
         audioRecorder.clear();
         audioRecorder.record();
+    }
+}
+
+var recordingNow = false;
+
+function startRecord() {
+    // start recording
+    if (!audioRecorder)
+        return;
+
+    recordingNow = true;
+    audioRecorder.clear();
+    audioRecorder.record();
+}
+
+function stopRecord(callback) {
+    // stop recording
+    audioRecorder.stop();
+    recordingNow = false;
+    audioRecorder.getBuffers(gotBuffers);
+    if (callback == undefined) return;
+    callback();
+}
+
+function toggleRecord() {
+    if (recordingNow == true) {
+        stopRecord();
+    } else {
+        startRecord();
     }
 }
 

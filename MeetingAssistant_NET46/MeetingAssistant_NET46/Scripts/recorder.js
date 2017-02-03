@@ -19,7 +19,7 @@ DEALINGS IN THE SOFTWARE.
 
 (function (window) {
 
-    var WORKER_PATH = 'scripts/recorderWorker.js';
+    var WORKER_PATH = '/scripts/recorderWorker.js';
 
     var Recorder = function (source, cfg) {
         var config = cfg || {};
@@ -74,7 +74,7 @@ DEALINGS IN THE SOFTWARE.
 
         this.getBuffers = function (cb) {
             currCallback = cb || config.callback;
-            worker.postMessage({ command: 'getBuffers' })
+            worker.postMessage({ command: 'getBuffers' });
         }
 
         this.exportWAV = function (cb, type) {

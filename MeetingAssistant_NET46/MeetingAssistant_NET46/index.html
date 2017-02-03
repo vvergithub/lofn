@@ -31,7 +31,7 @@
 
         function uploadBlob(blobData) {
 
-            var url = "/api/values/Upload?dummy=test";
+            var url = "/api/values/Upload?currentMeetingId=" + currentMeetingId;
 
             $.ajax({
                 url: url,

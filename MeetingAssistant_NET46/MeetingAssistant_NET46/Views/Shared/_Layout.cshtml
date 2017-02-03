@@ -17,7 +17,6 @@
     <script src="http://malsup.github.com/jquery.form.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-
     <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
     <style type="text/css">
         .form-style-8 {
@@ -122,7 +121,7 @@
 
         function uploadBlob(blobData) {
 
-            var url = "/api/values/Upload?dummy=test";
+            var url = "/api/values/Upload?meetingId=" + currentMeetingId;
 
             $.ajax({
                 url: url,
@@ -151,12 +150,12 @@
 
     </script>
 
-    <script src="scripts/recorder.js"></script>
-    <script src="scripts/main.js"></script>
+    <script src="/scripts/recorder.js"></script>
+    <script src="/scripts/main.js"></script>
     <style type="text/css">
         html {
-            overflow: hidden;
-        }
+            /*overflow: hidden;
+*/        }
 
         body {
             font: 14pt Arial, sans-serif;
@@ -237,32 +236,6 @@
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
-
-
+    @RenderBody()
 </body>
 </html>

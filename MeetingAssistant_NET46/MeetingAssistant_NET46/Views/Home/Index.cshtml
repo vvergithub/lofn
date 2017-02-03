@@ -1,11 +1,10 @@
 ﻿
-<div class="row">
-
 
     <script>
         var employeeSelectHtml;
+        var currentMeetingId;
 
-        var getEmployees = function(callback) {
+        var getEmployees = function (callback) {
             $.get("/api/employees", function (result) {
                 callback(result);
             });
@@ -18,27 +17,22 @@
         };
 
         // wait for the DOM to be loaded
-        $(function() {
-            // bind 'myForm' and provide a simple callback function
-
-            $('#createMeetingForm').ajaxForm(function(data) {
-                alert("The meeting will start with id=" + data);
+        $(function () {
+            $('#createMeetingForm').ajaxForm(function (data) {
+                // alert("The meeting will start with id=" + data);
+                currentMeetingId = data;
+                startRecord();
             });
 
             getLocations(function (result) {
-                /*$(result).each(function(index, item) {
-                });*/
-
                 $("#location_").autocomplete({
                     source: result
                 });
             });
 
-            getEmployees(function(result)
-            {
+            getEmployees(function (result) {
                 employeeSelectHtml = "<select name='participantList'>";
-                $(result).each(function(index, item)
-                {
+                $(result).each(function (index, item) {
                     employeeSelectHtml += "<option value='" + item.Id + "'>" + item.Name + "</option>";
                 });
                 employeeSelectHtml += "</select><br />";
@@ -50,41 +44,100 @@
                     return false;
                 });
             });
+
+            $("#meetingIsDoneBtn").click(function () {
+                stopRecord(function () {
+                    // Do something...
+                });
+            });
         });
     </script>
 
-    <form id="createMeetingForm" action="/api/values" method="post" class="form-style-8">
-        Name: <input type="text" name="name"/><br/>
-        Location:
+<!--
+<style type="text/css">
+    /* entire container, keeps perspective */
+    .flip-container {
+        perspective: 1000px;
+    }
+    /* flip the pane when hovered */
+    .flip-container:hover .flipper, .flip-container.hover .flipper {
+        transform: rotateY(180deg);
+    }
+
+    .flip-container, .front, .back {
+        width: 520px;
+        height: 480px;
+    }
+
+    /* flip speed goes here */
+    .flipper {
+        transition: 0.6s;
+        transform-style: preserve-3d;
+        position: relative;
+    }
+
+    /* hide back of pane during swap */
+    .front, .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    /* front pane, placed above back */
+    .front {
+        z-index: 2;
+        /* for firefox 31 */
+        transform: rotateY(0deg);
+    }
+
+    /* back, initially hidden pane */
+    .back {
+        transform: rotateY(180deg);
+    }
+
+</style>
+-->
+
+<style type="text/css">
+    .body-container {
+        /*display: block;*/
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+</style>
 
 
-        <!--
-        <select name="location">
-            <option value="Reykjavík">Reykjavík</option>
-            <option value="Florida">Florida</option>
-            <option value="Monterrey">Monterrey</option>
-            <option value="Stockholm">Stockholm</option>
-            <option value="Moscow">Moscow</option>
-            <option value="Redmond">Redmond</option>
-            <option value="Oslo">Oslo</option>
-            <option value="White house">White house</option>
-        </select>
-        -->
-        <input id="location" name="location" type="text"/>
-        <br/>
-        Organizer:
-        <div id="organizerPlaceholder"></div><br/>
-        <br/>
-        Participants [<a id="addParticipantBtn" href="#">Add participant</a>]<br/>
-        <div id="participants"></div><br/>
+<div class="body-container">
 
-        <input type="submit" value="Create meeting"/>
-    </form>
 
-    <div id="viz">
-        <canvas id="analyser" width="1024" height="500"></canvas>
-        <canvas id="wavedisplay" width="1024" height="500"></canvas>
+    <div class="flip-container">
+        <div class="flipper">
+            <div class="front">
+
+                <form id="createMeetingForm" action="/api/values" method="post" class="form-style-8">
+                    Name: <input type="text" name="name" /><br />
+                    Location:<input id="location" name="location" type="text" /><br />
+                    Organizer:<div id="organizerPlaceholder"></div><br />
+                    <br />
+                    Participants [<a id="addParticipantBtn" href="#">Add participant</a>]<br />
+                    <div id="participants"></div><br />
+
+                    <input type="submit" value="Create meeting" />
+                </form>
+            </div>
+            <div class="back">
+                <div id="viz">
+                    <canvas id="analyser" width="1024" height="500"></canvas>
+                    <canvas id="wavedisplay" width="1024" height="500"></canvas>
+                </div>
+
+                <div class="form-style-8">
+                    <input id="meetingIsDoneBtn" type="button" value="Meeting is done" />
+                </div>
+            </div>
+        </div>
     </div>
-
 
 </div>

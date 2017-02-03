@@ -100,3 +100,9 @@ C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46
 C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Debug\MeetingAssistant_NET46.csprojResolveAssemblyReference.cache
 C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Debug\MeetingAssistant_NET46.dll
 C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Debug\MeetingAssistant_NET46.pdb
+C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Debug\MeetingAssistant_NET46.csproj.App.config
+C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\bin\Microsoft.ProjectOxford.SpeakerRecognition.dll
+C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\bin\System.Net.Http.Extensions.dll
+C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\bin\System.Net.Http.Primitives.dll
+C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\bin\System.Net.Http.Extensions.xml
+C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\bin\System.Net.Http.Primitives.xml

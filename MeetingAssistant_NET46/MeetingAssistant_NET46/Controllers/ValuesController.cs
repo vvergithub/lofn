@@ -5,11 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Caching;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
+
+using Microsoft.ProjectOxford.SpeakerRecognition;
+using Microsoft.ProjectOxford.SpeakerRecognition.Contract;
+using Microsoft.ProjectOxford.SpeakerRecognition.Contract.Identification;
 
 using Microsoft.CognitiveServices.SpeechRecognition;
 using Microsoft.WindowsAzure.Storage;
@@ -21,6 +26,16 @@ using System.Threading.Tasks;
 
 namespace MeetingAssistant_NET46.Controllers
 {
+    /*
+    public class CustomDataRecognitionClient : DataRecognitionClient
+    {
+        public CustomDataRecognitionClient(SpeechRecognitionMode mode, Preferences prefs, bool wantIntent) : base(mode, prefs, wantIntent)
+        {
+            
+        }
+    }
+    */
+
     public class CreateMeetingViewModel
     {
         public string Name { get; set; }
@@ -62,13 +77,10 @@ namespace MeetingAssistant_NET46.Controllers
             return "value";
         }
 
-        
-
-
-
         // POST api/values
         public Guid Post([FromBody]CreateMeetingViewModel data) // I know....we should use viewmodels... =O)
         {
+            // return Guid.Empty;
             // TODO: Validate for the love of G*d...
             try
             {
@@ -143,8 +155,10 @@ namespace MeetingAssistant_NET46.Controllers
         }
         */
 
+        private Guid currentMeetingId;
+
         [HttpPost]
-        public void Upload(string dummy)
+        public void Upload(Guid meetingId)
         {
             try
             {
@@ -164,6 +178,7 @@ namespace MeetingAssistant_NET46.Controllers
 
                     // var ms = new MemoryStream();
                     // this.Request.Content.CopyToAsync(ms);
+                    currentMeetingId = meetingId;
                     RunSpeechToTextFromStream(stream);
                     // UploadToAzureBlobStorage(blobName, stream);
 
@@ -208,6 +223,97 @@ namespace MeetingAssistant_NET46.Controllers
 
                 throw;
             }
+        }
+
+        private void EnrollSpeaker(Stream stream)
+        {
+            // Reset pointer
+            stream.Seek(0, SeekOrigin.Begin);
+
+            SpeakerIdentificationServiceClient speakerIDClient = new SpeakerIdentificationServiceClient("c6b005dcf13e45b6a91485d38763277b");
+
+            //Creating Speaker Profile...
+            CreateProfileResponse creationResponse = speakerIDClient.CreateProfileAsync("en-US").Result;
+            //Speaker Profile Created.
+            //Retrieving The Created Profile...
+            Profile profile = speakerIDClient.GetProfileAsync(creationResponse.ProfileId).Result;
+            //Speaker Profile Retrieved."
+            //Enrolling Speaker
+            OperationLocation processPollingLocation = speakerIDClient.EnrollAsync(stream, profile.ProfileId, false).Result;
+
+            EnrollmentOperation enrollmentResult;
+            int numOfRetries = 10;
+            TimeSpan timeBetweenRetries = TimeSpan.FromSeconds(5.0);
+            while (numOfRetries > 0)
+            {
+                Task.Delay(timeBetweenRetries);
+                enrollmentResult = speakerIDClient.CheckEnrollmentStatusAsync(processPollingLocation).Result;
+
+                if (enrollmentResult.Status == Status.Succeeded)
+                {
+                    break;
+                }
+                else if (enrollmentResult.Status == Status.Failed)
+                {
+                    throw new EnrollmentException(enrollmentResult.Message);
+                }
+                numOfRetries--;
+            }
+            if (numOfRetries <= 0)
+            {
+                throw new EnrollmentException("Enrollment operation timeout.");
+            }
+
+            //Enrollment Done.
+            // Store profile in memory cache
+            ObjectCache memCache = MemoryCache.Default;
+            var profiles = memCache.Get("SpeakerProfiles") != null ? memCache.Get("SpeakerProfiles") as List<Profile> : new List<Profile>();
+            memCache.Remove("SpeakerProfiles");
+            memCache.Add("SpeakerProfiles", profiles, DateTimeOffset.UtcNow.AddHours(2));
+        }
+
+        private void RecognizeSpeaker(Stream stream)
+        {
+            // Reset pointer
+            stream.Seek(0, SeekOrigin.Begin);
+
+            SpeakerIdentificationServiceClient speakerIDClient = new SpeakerIdentificationServiceClient("c6b005dcf13e45b6a91485d38763277b");
+
+            // Fetch existing profiles
+            ObjectCache memCache = MemoryCache.Default;
+            var profiles = memCache.Get("SpeakerProfiles") != null ? memCache.Get("SpeakerProfiles") as List<Profile> : new List<Profile>();
+            List<Guid> testProfileIds = (from prof in profiles select prof.ProfileId).ToList();
+
+            OperationLocation processPollingLocation = speakerIDClient.IdentifyAsync(stream, testProfileIds.ToArray(), false).Result;
+
+            IdentificationOperation identificationResponse = null;
+            int numOfRetries = 10;
+            TimeSpan timeBetweenRetries = TimeSpan.FromSeconds(5.0);
+            while (numOfRetries > 0)
+            {
+                Task.Delay(timeBetweenRetries);
+                identificationResponse = speakerIDClient.CheckIdentificationStatusAsync(processPollingLocation).Result;
+
+                if (identificationResponse.Status == Status.Succeeded)
+                {
+                    break;
+                }
+                else if (identificationResponse.Status == Status.Failed)
+                {
+                    throw new IdentificationException(identificationResponse.Message);
+                }
+                numOfRetries--;
+            }
+            if (numOfRetries <= 0)
+            {
+                throw new IdentificationException("Identification operation timeout.");
+            }
+
+            //"Identification Done."
+
+            //Values now accessible!!
+            var _identificationResultTxtBlk = identificationResponse.ProcessingResult.IdentifiedProfileId.ToString();
+            var _identificationConfidenceTxtBlk = identificationResponse.ProcessingResult.Confidence.ToString();
         }
 
         void UploadToAzureBlobStorage(string blobName, Stream stream)
@@ -286,8 +392,32 @@ namespace MeetingAssistant_NET46.Controllers
 
         private void DataClient_OnResponseReceived(object sender, SpeechResponseEventArgs e)
         {
-            var firstResult = e.PhraseResponse.Results.First();
-            _parts.Add(firstResult.LexicalForm);
+            try
+            {
+
+                var firstResult = e.PhraseResponse.Results.First();
+                // _parts.Add(firstResult.LexicalForm);
+
+                var content = new Content();
+                content.MeetingId = currentMeetingId;
+                content.EmployeeId = Guid.Parse("BF49B343-97C2-4544-AC07-8964C269280D");
+                content.Sequence = 159;
+                content.Line = firstResult.LexicalForm;
+                content.CategoryId = Guid.Parse("61027F10-21A9-4C91-B4C1-7E7E99A29853");
+
+                using (var db = new AzureDb("Server=lofndb.database.windows.net;Database=lofn2;User Id=lofn;Password=Passw0rd; "))
+                {
+                    db.Contents.Add(content);
+
+                    db.SaveChanges();
+                    // TODO: Handle transaction and failures.
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
         }
     }
 }
