@@ -1,57 +1,60 @@
 ﻿
 
-    <script>
-        var employeeSelectHtml;
-        var currentMeetingId;
+<script>
+    var baseUrl = ""; // "http://mettingassistantservicetest.azurewebsites.net";
+    var employeeSelectHtml;
+    var currentMeetingId;
 
-        var getEmployees = function (callback) {
-            $.get("/api/employees", function (result) {
-                callback(result);
-            });
-        };
+    var getEmployees = function (callback) {
+        $.get(baseUrl + "/api/employees", function (result) {
+            callback(result);
+        });
+    };
 
-        var getLocations = function (callback) {
-            $.get("/api/locations", function (result) {
-                callback(result);
-            });
-        };
+    var getLocations = function (callback) {
+        $.get(baseUrl + "/api/locations", function (result) {
+            callback(result);
+        });
+    };
 
-        // wait for the DOM to be loaded
-        $(function () {
-            $('#createMeetingForm').ajaxForm(function (data) {
-                // alert("The meeting will start with id=" + data);
-                currentMeetingId = data;
-                startRecord();
-            });
+    // wait for the DOM to be loaded
+    $(function () {
+        $('#createMeetingForm').ajaxForm(function (data) {
+            // alert("The meeting will start with id=" + data);
+            currentMeetingId = data;
+            startRecord();
+        });
 
-            getLocations(function (result) {
-                $("#location_").autocomplete({
-                    source: result
-                });
-            });
-
-            getEmployees(function (result) {
-                employeeSelectHtml = "<select name='participantList'>";
-                $(result).each(function (index, item) {
-                    employeeSelectHtml += "<option value='" + item.Id + "'>" + item.Name + "</option>";
-                });
-                employeeSelectHtml += "</select><br />";
-
-                $("#organizerPlaceholder").replaceWith(employeeSelectHtml);
-
-                $("#addParticipantBtn").click(function () {
-                    $("#participants").append(employeeSelectHtml);
-                    return false;
-                });
-            });
-
-            $("#meetingIsDoneBtn").click(function () {
-                stopRecord(function () {
-                    // Do something...
-                });
+        getLocations(function (result) {
+            $("#location_").autocomplete({
+                source: result
             });
         });
-    </script>
+
+        getEmployees(function (result) {
+            employeeSelectHtml = "<select name='participantList'>";
+            $(result).each(function (index, item) {
+                employeeSelectHtml += "<option value='" + item.Id + "'>" + item.Name + "</option>";
+            });
+            employeeSelectHtml += "</select><br />";
+
+            $("#organizerPlaceholder").replaceWith(employeeSelectHtml);
+
+            $("#addParticipantBtn").click(function () {
+                $("#participants").append(employeeSelectHtml);
+                return false;
+            });
+        });
+
+        $("#createMeetingForm").attr("action", baseUrl + "/api/values");
+
+        $("#meetingIsDoneBtn").click(function () {
+            stopRecord(function () {
+                // Do something...
+            });
+        });
+    });
+</script>
 
 <!--
 <style type="text/css">
@@ -116,7 +119,7 @@
         <div class="flipper">
             <div class="front">
 
-                <form id="createMeetingForm" action="/api/values" method="post" class="form-style-8">
+                <form id="createMeetingForm" method="post" class="form-style-8">
                     Name: <input type="text" name="name" /><br />
                     Location:<input id="location" name="location" type="text" /><br />
                     Organizer:<div id="organizerPlaceholder"></div><br />
