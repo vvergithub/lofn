@@ -54,6 +54,8 @@
         $("#meetingIsDoneBtn").click(function () {
             stopRecord(function () {
                 // Do something...
+
+                $("#finale").replaceWith("Thank you and goodbye!");
             });
         });
     });
@@ -206,9 +208,7 @@ a:hover{
 
 <div id="viz">
     <canvas id="analyser" width="1024" height="500"></canvas>
-    <!--
     <canvas id="wavedisplay" width="1024" height="500"></canvas>
-        -->
 </div>
 
 <div class="body-container">
@@ -231,7 +231,7 @@ a:hover{
             </div>
             <div class="back">
                 <div class="form-style-8">
-                    <div style="margin: auto">
+                    <div id="finale" style="margin: auto">
                         <img src="/mic128.png" />
                         <input id="meetingIsDoneBtn" type="button" value="Meeting is done" />
                     </div>
