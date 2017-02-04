@@ -31,7 +31,8 @@
 
         function uploadBlob(blobData) {
 
-            var url = "/api/values/Upload?currentMeetingId=" + currentMeetingId;
+            //var url = "/api/values/Upload?currentMeetingId=" + currentMeetingId;
+            var url = "http://meetassistantservice.azurewebsites.net/api/values/Upload?currentMeetingId=" + currentMeetingId;
 
             $.ajax({
                 url: url,
