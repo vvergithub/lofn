@@ -124,8 +124,8 @@ function updateAnalysers(time) {
 
     // analyzer draw code here
     {
-        var SPACING = 3;
-        var BAR_WIDTH = 1;
+        var SPACING = 21;
+        var BAR_WIDTH = 20;
         var numBars = Math.round(canvasWidth / SPACING);
         var freqByteData = new Uint8Array(analyserNode.frequencyBinCount);
 
@@ -134,7 +134,7 @@ function updateAnalysers(time) {
         analyserContext.clearRect(0, 0, canvasWidth, canvasHeight);
         analyserContext.fillStyle = '#F6D565';
         analyserContext.lineCap = 'round';
-        var multiplier = analyserNode.frequencyBinCount / numBars;
+        var multiplier = (analyserNode.frequencyBinCount / numBars) / 10;
 
         // Draw rectangle for each frequency bin.
         for (var i = 0; i < numBars; ++i) {

@@ -80,7 +80,7 @@ namespace MeetingAssistant_NET46.Controllers
         // POST api/values
         public Guid Post([FromBody]CreateMeetingViewModel data) // I know....we should use viewmodels... =O)
         {
-            // return Guid.Empty;
+            return Guid.Empty;
             // TODO: Validate for the love of G*d...
             try
             {

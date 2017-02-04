@@ -22,6 +22,9 @@
         $('#createMeetingForm').ajaxForm(function (data) {
             // alert("The meeting will start with id=" + data);
             currentMeetingId = data;
+
+            $("#flippy").addClass("hover");
+
             startRecord();
         });
 
@@ -36,7 +39,7 @@
             $(result).each(function (index, item) {
                 employeeSelectHtml += "<option value='" + item.Id + "'>" + item.Name + "</option>";
             });
-            employeeSelectHtml += "</select><br />";
+            employeeSelectHtml += "</select>";
 
             $("#organizerPlaceholder").replaceWith(employeeSelectHtml);
 
@@ -56,14 +59,15 @@
     });
 </script>
 
-<!--
 <style type="text/css">
     /* entire container, keeps perspective */
     .flip-container {
         perspective: 1000px;
+        margin: auto;
     }
     /* flip the pane when hovered */
-    .flip-container:hover .flipper, .flip-container.hover .flipper {
+    /* .flip-container:hover .flipper, */
+    .flip-container.hover .flipper {
         transform: rotateY(180deg);
     }
 
@@ -100,7 +104,6 @@
     }
 
 </style>
--->
 
 <style type="text/css">
     .body-container {
@@ -109,13 +112,109 @@
         margin-right: auto;
     }
 
+    #analyser {
+        background-color: transparent;
+        position: fixed;
+        width: 100%;
+        bottom: 0px;
+    }
 </style>
 
+<style>
+body {
+  margin: 0;
+  background: #fff;
+}
+video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+	background-size: cover;
+	transition: 1s opacity;
+	opacity: 0.3;
+}
+.stopfade {
+   opacity: .5;
+}
+
+#finish {
+  font-family: Agenda-Light, Agenda Light, Agenda, Arial Narrow, sans-serif;
+  font-weight:100;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 2rem;
+  width: 33%;
+  margin:2rem;
+  margin: auto;
+  font-size: 1.2rem;
+  margin-top: 500px;
+  box-shadow: 0px 0px 30px #888888;
+}
+h1 {
+  font-size: 3rem;
+  text-transform: uppercase;
+  margin-top: 0;
+  letter-spacing: .3rem;
+}
+#finish button {
+  display: block;
+  width: 80%;
+  padding: .4rem;
+  border: none;
+  margin: 1rem auto;
+  font-size: 1.3rem;
+  background: rgba(255,255,255,0.5);
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: .3s background;
+}
+#finish button:hover {
+   background: rgba(0,0,0,0.5);
+}
+
+a {
+  display: inline-block;
+  color: #fff;
+  text-decoration: none;
+  background:rgba(0,0,0,0.5);
+  padding: .5rem;
+  transition: .6s background;
+}
+a:hover{
+  background:rgba(0,0,0,0.9);
+}
+@@media screen and (max-width: 500px) {
+  div{width:70%;}
+}
+@@media screen and (max-device-width: 800px) {
+  html { }
+  #bgvid { display: none; }
+}
+</style>
+
+<video id="bgvid" playsinline autoplay muted loop>
+    <!-- WCAG general accessibility recommendation is that media such as background video play through only once. Loop turned on for the purposes of illustration; if removed, the end of the video will fade in the same way created by pressing the "Pause" button  -->
+    <source src="leap.mp4" type="video/mp4">
+</video>
+
+<div id="viz">
+    <canvas id="analyser" width="1024" height="500"></canvas>
+    <!--
+    <canvas id="wavedisplay" width="1024" height="500"></canvas>
+        -->
+</div>
 
 <div class="body-container">
 
 
-    <div class="flip-container">
+    <div id="flippy" class="flip-container">
         <div class="flipper">
             <div class="front">
 
@@ -131,13 +230,11 @@
                 </form>
             </div>
             <div class="back">
-                <div id="viz">
-                    <canvas id="analyser" width="1024" height="500"></canvas>
-                    <canvas id="wavedisplay" width="1024" height="500"></canvas>
-                </div>
+
 
                 <div class="form-style-8">
-                    <input id="meetingIsDoneBtn" type="button" value="Meeting is done" />
+                    <img src="/img128.png" />
+                    <input id="meetingIsDoneBtn" type="button" value="Meeting is done"/>
                 </div>
             </div>
         </div>
