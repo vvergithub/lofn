@@ -1,7 +1,7 @@
 ﻿
 
 <script>
-    var baseUrl = ""; // "http://mettingassistantservicetest.azurewebsites.net";
+    var baseUrl = "http://mettingassistantservicetest.azurewebsites.net";
     var employeeSelectHtml;
     var currentMeetingId;
 
@@ -201,7 +201,7 @@ a:hover{
 
 <video id="bgvid" playsinline autoplay muted loop>
     <!-- WCAG general accessibility recommendation is that media such as background video play through only once. Loop turned on for the purposes of illustration; if removed, the end of the video will fade in the same way created by pressing the "Pause" button  -->
-    <source src="leap.mp4" type="video/mp4">
+    <source src="https://lofnspeechstorage.blob.core.windows.net/deploy/LEAP.mp4" type="video/mp4">
 </video>
 
 <div id="viz">
@@ -233,8 +233,10 @@ a:hover{
 
 
                 <div class="form-style-8">
-                    <img src="/mic128.png" />
-                    <input id="meetingIsDoneBtn" type="button" value="Meeting is done"/>
+                    <div style="margin: auto">
+                        <img src="/mic128.png" />
+                        <input id="meetingIsDoneBtn" type="button" value="Meeting is done" />
+                    </div>
                 </div>
             </div>
         </div>

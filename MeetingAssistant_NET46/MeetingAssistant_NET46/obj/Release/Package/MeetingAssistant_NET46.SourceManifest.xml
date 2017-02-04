@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<sitemanifest>
-  <IisApp path="C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Release\Package\PackageTmp" />
-  <setAcl path="C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Release\Package\PackageTmp" setAclResourceType="Directory" />
-  <setAcl path="C:\APPL\dev\MeetingAssistant_NET46\MeetingAssistant_NET46\MeetingAssistant_NET46\obj\Release\Package\PackageTmp" setAclUser="anonymousAuthenticationUser" setAclResourceType="Directory" />
-</sitemanifest>

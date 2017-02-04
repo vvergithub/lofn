@@ -4,6 +4,7 @@
     <NameOfLastUsedPublishProfile>meetassistant - Web Deploy</NameOfLastUsedPublishProfile>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44318</IISExpressSSLPort>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
   <ProjectExtensions>
     <VisualStudio>
